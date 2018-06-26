@@ -44,11 +44,34 @@
 - chat-record
 - chat-room
 
+### 0.0 利用redis实现session共享
+
+聊天室分为客户端和服务端，如果需要使用到用户系统，那么传统的session机制就无法起作用了，因为服务端运行在CLI中．所以，这里就需要改变传统的将session_id存入cookie中的方式，使得session能够共享．这里采用redis来完成共享．
+
+查找资料，有两种方式可以改变传统机制，让redis存储session_id：
+
+- 修改php.ini
+- 使用ini_set函数
+- 使用`session_set_save_handler`
+
+修改php.ini会影响到全局，不是非常好，这里采用第三种方式．
+
+也顺便给出第二种方式：
+```php
+ini_set("session.save_handler", "redis");
+ini_set("session.save_path", "tcp://127.0.0.1:6379");
+```
+
+第三种方式需要实现`SessionHandlerInterface`接口
+
 ### 1.0 登录/注册
 
 比较简单，省略（懒癌发作）
 
 ### 1.1 建立一个公共聊天室
+
+- 数据库记录一个聊天室，类型是公共
+- 用户连接后直接进入公共聊天室
 
 ### 1.2 创建一个房间
 
