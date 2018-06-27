@@ -46,9 +46,10 @@
 
 ### 0.0 利用redis实现session共享
 
-聊天室分为客户端和服务端，如果需要使用到用户系统，那么传统的session机制就无法起作用了，因为服务端运行在CLI中．所以，这里就需要改变传统的将session_id存入cookie中的方式，使得session能够共享．这里采用redis来完成共享．
+聊天室分为客户端和服务端，如果需要使用到用户系统，那么传统的session机制就无法起作用了，因为服务端运行在CLI中．
+所以，使得session能够共享．这里采用redis来完成共享．
 
-查找资料，有两种方式可以改变传统机制，让redis存储session_id：
+查找资料，有三种方式可以改变传统机制，让redis存储session：
 
 - 修改php.ini
 - 使用ini_set函数
@@ -62,7 +63,33 @@ ini_set("session.save_handler", "redis");
 ini_set("session.save_path", "tcp://127.0.0.1:6379");
 ```
 
-第三种方式需要实现`SessionHandlerInterface`接口
+第三种方式需要实现`SessionHandlerInterface`接口，并使用`session_set_save_handler`进行注册．这里注意的是，使用这种方式http访问，PHP仍会将`session_id`存入`cookie`中，所以此时`cli`方式仍不能正常使用session，我们需要做一下改动，将`session_id`存入`redis`中．
+
+
+`session_start`后获取`session_id`存入redis中，设定超时时间：
+```php
+session_start();
+$sessionKey = 'custom:session_id';
+$sessionId = $redis->get($sessionKey);
+if (empty($sessionId)) {
+	$sessionId = $option['prefix'] . session_id();
+	$redis->setex($sessionKey, 24*60*60, $sessionId);
+}
+```
+
+定义session处理类`CustomSessionHandle`，其中`read`,`write`等方法不直接取传参来的session_id，而是从session中获取
+```php
+$sessionId = $redis->get($sessionKey);
+if (empty($sessionId)) {
+    $sessionId = $option['prefix'] . $session_id;
+}
+```
+
+注意在session_start之前注册session处理类：
+```
+$handler = new CustomSessionHandle($option);
+session_set_save_handler($handler, true);
+```
 
 ### 1.0 登录/注册
 
