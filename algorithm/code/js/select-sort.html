@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Document</title>
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding:0;
+        }
+        #output {
+            height: 300px;
+            margin: 20px;
+            padding: 20px;
+            position: relative;
+        }
+        #output span {
+            position: absolute;
+            bottom: 0;
+            background: #33333382;
+            width: 20px;
+            font-size:12px;
+            display: inline-block;
+            text-align: center;
+            color: #fff;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <button type="button" id="rand-num">生成随机数</button>
+        <button type="button" id="select-sort">选择排序</button>
+        <div id="output">
+        </div>
+    </div>
+</body>
+
+<script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="module">
+import as from './select-sort.js'
+
+
+$(function () {
+    const length = 20;
+    let data = [];
+
+    $('#rand-num').on('click', function() {
+        for (let i = 0; i < length; i++) {
+            data[i] = Math.floor(Math.random()*(91)+10)
+        }
+
+        init(data);
+    });
+
+    $('#select-sort').on('click', function() {
+
+        as.mysort(data);
+    });
+});
+
+/**
+ * dom初始化
+ * @param  {[type]} data [description]
+ * @return {[type]}      [description]
+ */
+function init(data) {
+    const len = data.length;
+    const maxHeight = 300;
+    const max = Math.max(...data);
+    const h = maxHeight/max;
+    const oOutput = $('#output');
+    oOutput.html('');
+
+    for (let i = 0; i < len; i++) {
+        const span = $('<span></span>');
+        const height = h * data[i];
+        const left = parseInt($('#output').offset().left)+(20+4)*i;
+        span.text(data[i]).css({
+            'left':left,
+            'height':height
+        }).data('index', data[i]);
+        oOutput.append(span);
+    }
+}
+</script>
+</html>
