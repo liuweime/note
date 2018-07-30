@@ -30,6 +30,7 @@
     <div id="app">
         <button type="button" id="rand-num">生成随机数</button>
         <button type="button" id="select-sort">选择排序</button>
+        <button type="button" id="insert-sort">插入排序</button>
         <div id="output">
         </div>
     </div>
@@ -37,7 +38,7 @@
 
 <script src="http://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
 <script type="module">
-import as from './select-sort.js'
+import selfSort from './sort.js'
 
 
 $(function () {
@@ -53,8 +54,10 @@ $(function () {
     });
 
     $('#select-sort').on('click', function() {
-
-        as.mysort(data);
+        selfSort.select_sort(data);
+    });
+    $('#insert-sort').on('click', function() {
+        selfSort.insert_sort(data);
     });
 });
 
