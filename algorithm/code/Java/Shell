@@ -1,0 +1,12 @@
+public class Shell
+{
+    public static void sort(int[] data)
+    {
+
+    }
+
+    public static void main(String[] args)
+    {
+
+    }
+}

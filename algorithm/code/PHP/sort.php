@@ -42,6 +42,7 @@ function select_sort(array $data) : array
  *
  * @param array $data
  * @param array
+ * @return array
  */
 function insert_sort(array $data) : array
 {
@@ -76,16 +77,12 @@ function shell_sort(array $data) : array
 
         // 插入排序
         for($i = $d; $i <= $len - 1; $i++) {
-            $tmp = $data[$i];
-
-            for($j = $i; $j >= $d; $j = $j - $d) {
-
-                if($data[$j-$d] < $tmp) {
-                    break;
-                }
+            
+            for($j = $i; $j >= $d && $data[$j-$d] < $tmp; $j -= $d) {
+                $tmp = $data[$i];
                 $data[$j] = $data[$j-$d];
+                $data[$j] = $tmp;
             }
-            $data[$j] = $tmp;
         }
 
         $d = (int)floor($d/2);
@@ -113,6 +110,30 @@ function bubble_sort(array $data) : array
                 $tmp = $data[$j];
                 $data[$j] = $data[$j+1];
                 $data[$j+1] = $tmp;
+            }
+        }
+    }
+
+    return $data;
+}
+
+function bubble_sort_second(array $data)
+{
+    $len = count($data);
+    $flag = true;
+
+    for($i = 0; $i < $len-1 && $flag; $i++) {
+
+        $flag = false;
+        for($j = 0; $j < $len-1-$i; $j++) {
+
+            // 较大数一直冒泡 到最后
+            if($data[$j] > $data[$j+1]) {
+                $tmp = $data[$j];
+                $data[$j] = $data[$j+1];
+                $data[$j+1] = $tmp;
+
+                $flag = true;
             }
         }
     }
@@ -230,7 +251,10 @@ Wiki中对归并操作的说明：
 /**
  * 归并排序 需要额外空间 O(nlogn)
  *
- * @return [type] [description]
+ * @param array $data
+ * @param int $start
+ * @param int $end
+ * @return void [type] [description]
  */
 function merge_sort(array &$data, int $start, int $end)
 {
@@ -256,7 +280,7 @@ function merge_sort(array &$data, int $start, int $end)
         $item[$i++] = $data[$intervalFirstStart] < $data[$intervalSecondStart] ? $data[$intervalFirstStart++] : $data[$intervalSecondStart++];
     }
 
-    // 归并区间
+    // c
     while ($intervalFirstStart <= $intervalFirstEnd) {
         $item[$i++] = $data[$intervalFirstStart++];
     }
@@ -269,3 +293,11 @@ function merge_sort(array &$data, int $start, int $end)
         $data[$j] = $item[$j];
     }
 }
+
+
+
+$a = [2,10,3,5,2,5,3,6,3,8,3];
+$s = bubble_sort_second($a);
+
+echo implode($a, ',') , PHP_EOL;
+echo implode($s, ',') , PHP_EOL;
