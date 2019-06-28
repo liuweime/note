@@ -22,7 +22,7 @@ flag: green
 `Fast Index Creation` 大大加快了修改索引的速度，但是也只对索引有效，所以，在 MySQL5.6 中对该特性进行了扩充，叫做 `Online DDL`，可以对添加列、删除列、修改列类型、列重命名、设置默认值等 DDL 操作有作用。
 
 根据官网描述，添加/删除索引、设置默认值、修改列等操作不会复制表，添加/删除列、设置列属性NULL
-或NOT NULL、添加主键等操作仍会复制表，但是可以在 DDL 时声明`ALGORITHM=INPLACE`提供性能。更为详细的操作情况 [Online DDL Operations](https://dev.mysql.com/doc/refman/5.6/en/innodb-online-ddl-operations.html)。
+或NOT NULL、添加主键等操作仍会复制表，但是可以在 DDL 时声明`ALGORITHM=INPLACE`提升性能。更为详细的操作情况 [Online DDL Operations](https://dev.mysql.com/doc/refman/5.6/en/innodb-online-ddl-operations.html)。
 
 已上是不做其他任何工具或脚本情况下，利用 MySQL 本身特性进行 DDL 操作。事实上，没有`Online DDL`DBA通常采用下面方法来对大数据表进行DDL操作。
 
@@ -49,3 +49,47 @@ flag: green
 我第一份工作所在的公司就是使用这种方法，记得刚刚去公司报道，技术部只有前端在，后端人员加了一夜班，为了滚动更新时服务出现问题第一时间可以修复。
 
 以上就是我了解的线上DDL操作的方法，事实上我从未从事过DBA相关工作，纸上谈兵罢了。
+
+
+
+**2019-06-28 日更新**
+
+上面说的是 MySQL 5.* 版本下的 DDL 操作，在 MySQL 8 添加了一个新的特性叫做`instant add column`，从英文意思也能知道在特性是什么。该特性可以在**不重建表**的情况下**快速**添加列。更详细的内容见 [8.0 online ddl operations](https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl-operations.html)
+
+该特性据说可以亿级数据1s添加新列，而且是由国内大厂鹅厂提交的（应该是鹅厂 TMySQL 的特性）。
+
+那么，采用了什么方法提升了如此高的速度呢？该特性将 `instant add column` 前后做了一定的区分：
+
+- 加列时将记录原列数量、新列定义、新列默认值，但是**不修改原表结构**；
+- 查询时，除了返回旧数据的内容外还是自动加入新的列的默认值，追加在原列数据之后，即伪造了一个新列；
+- 插入时，给新插入数据加入instant 标志位和列数信息，根据这两点 InnoDB 可以判断是新数据还是旧数据，便于返回结果；
+- 更新时，如果是更新原数据列，与原理更新保持一致，如果更新是新加列，会先删除原列在作为新数据插入
+
+由上描述可以看出该新特性依赖于8.*版本新的数据字典，该特性添加列也不是毫无成本（修改数据字典需要加锁）。
+
+同时由于是"伪列"的原因，添加新列不支持指定列的位置，仅能在列尾添加，还需要注意：
+
+- 不支持压缩表
+- 不支持全文索引的表（FULLTEXT）
+- 不支持临时表
+- 使用 instant 的表不兼容旧版本 MySQL
+- 所加列必须非自增
+
+使用方式是正常的 DDL 语句后添加`ALGORITHM=INSTANT`, 如下：
+
+```sql
+ALTER TABLE `test` ADD COLUMN c INT, ADD COLUMN d INT, ALGORITHM=INSTANT;
+```
+
+以上均查询自网络文章、官网文档，请见参考文档
+
+## 参考文档
+
+[MySQL在线加字段实现原理](<https://got.qq.com/webplat/info/news_version3/8616/8622/8625/8628/m7025/201407/271174.shtml>)
+[在？上次你问对大型表的DDL操作，我找到好方法了](https://dbaplus.cn/news-11-2552-1.html)
+[MySQL 为表添加列 是怎么”立刻”完成的](https://opensource.actionsky.com/20190620-mysql-add-column/)
+[MySQL 8.0: InnoDB now supports Instant ADD COLUMN](https://mysqlserverteam.com/mysql-8-0-innodb-now-supports-instant-add-column/)
+[Online DDL Operations](https://dev.mysql.com/doc/refman/8.0/en/innodb-online-ddl-operations.html)
+[MySQL8.0 - 新特性 - Instant Add Column](https://yq.aliyun.com/articles/670691)
+
+
