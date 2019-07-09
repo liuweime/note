@@ -255,7 +255,8 @@ public class LinkedList<K extends Comparable, V>
     }
 
     /**
-     * 两个有序链表合并一个有序链表
+     * 两个有序链表合并一个有序链表 
+     * TODO 写的不对
      *
      * @param list 另一个链表
      * @return
@@ -303,11 +304,24 @@ public class LinkedList<K extends Comparable, V>
 
     /**
      * 检测列表是否有环
+     * 快慢指针法
      *
      * @return
      */
     public boolean isRing() {
+        Node slowPointer = head.next;
+        Node fastPointer = head.next;
 
+        while (fastPointer.next != null && fastPointer.next.next != null) {
+
+            if (slowPointer.key.compareTo(fastPointer.key) == 0) {
+
+                return true;
+            }
+
+            slowPointer = slowPointer.next;
+            fastPointer = fastPointer.next.next;
+        }
 
         return false;
     }
