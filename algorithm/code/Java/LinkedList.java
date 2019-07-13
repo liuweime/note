@@ -15,7 +15,7 @@ public class LinkedList<K extends Comparable, V>
      */
     private Node head;
 
-    private class Node {
+    public class Node {
         /**
          * @var T 链表值
          */
@@ -28,6 +28,7 @@ public class LinkedList<K extends Comparable, V>
         Node next;
 
         public Node(K key, V value) {
+
             this.key = key;
             this.value = value;
             this.next = null;
@@ -87,6 +88,10 @@ public class LinkedList<K extends Comparable, V>
         return node;
     }
 
+    /**
+     *
+     * @return
+     */
     public Node getHead() {
         return head;
     }
@@ -95,6 +100,8 @@ public class LinkedList<K extends Comparable, V>
         if (isEmpty()) {
             return null;
         }
+
+
 
         Node node = head.next;
         while (node.next != null) {
@@ -109,13 +116,14 @@ public class LinkedList<K extends Comparable, V>
     /**
      * 往链表中添加节点
      *
+     *
      * @param key 节点值
      */
+
     public void add(K key, V value){
         if (isFull()) {
             return;
         }
-
         Node node = new Node(key, value);
 
         node.next = head.next;
@@ -222,11 +230,11 @@ public class LinkedList<K extends Comparable, V>
         StringBuilder str = new StringBuilder();
         str.append("{\"");
         while (node.next != null) {
-            String tmp = node.key + "\":\"" + node.value + "\",\"";
+            String tmp = node.key + "\",\"";
             str.append(tmp);
             node = node.next;
         }
-        String tmp = node.key + "\":\"" + node.value + "\"}";
+        String tmp = node.key + "\"}";
         str.append(tmp);
         return str.toString();
     }
@@ -255,43 +263,40 @@ public class LinkedList<K extends Comparable, V>
     }
 
     /**
-     * 两个有序链表合并一个有序链表 
-     * TODO 写的不对
+     * 两个有序链表合并一个有序链表
      *
-     * @param list 另一个链表
+     *
+     * @param target 另一个链表
      * @return
      */
-    public void merge(LinkedList list) {
-        if (list.isEmpty()) return;
+    public void merge(LinkedList<K , V> target) {
+        if (target.isEmpty()) return;
         if (isEmpty()) {
-            head.next = list.getHead().next;
+            head.next = target.getHead().next;
             return;
         }
 
-        Node aPointer = head.next;
-        Node bHead = list.getHead();
-        Node bPointer = bHead.next;
+        Node sourcePointer = head.next;
+        Node targetPointer = target.getHead().next;
 
-        while (aPointer.next != null) {
-
-            // a > b
-            if (aPointer.next.key.compareTo(bPointer.key) > 0) {
-                // 保存 b 节点
-                Node tmp = new Node(bPointer.key, bPointer.value);
-
-                // b 的当前节点插入 a 中
-                tmp.next = aPointer.next;
-                aPointer.next =tmp;
-
-                bPointer = bPointer.next;
+        while (sourcePointer != null && sourcePointer.next != null && targetPointer != null) {
+            if (sourcePointer.key.compareTo(targetPointer.key) > 0) {
+                if (head.next.key.compareTo(sourcePointer.key) == 0) {
+                    Node next = targetPointer.next;
+                    targetPointer.next = sourcePointer;
+                    head.next = targetPointer;
+                    targetPointer = next;
+                    sourcePointer = head.next;
+                }
+            } else if (sourcePointer.next.key.compareTo(targetPointer.key) > 0) {
+                Node next = targetPointer.next;
+                targetPointer.next = sourcePointer.next;
+                sourcePointer.next = targetPointer;
+                targetPointer = next;
+                sourcePointer = sourcePointer.next;
+            } else {
+                sourcePointer = sourcePointer.next;
             }
-
-            aPointer = aPointer.next;
-        }
-
-
-        if (bPointer != null) {
-            aPointer.next = bPointer;
         }
     }
 
@@ -309,6 +314,7 @@ public class LinkedList<K extends Comparable, V>
      * @return
      */
     public boolean isRing() {
+
         Node slowPointer = head.next;
         Node fastPointer = head.next;
 
@@ -332,6 +338,7 @@ public class LinkedList<K extends Comparable, V>
      * @return
      */
     public Node getMiddleNode() {
+
         return null;
     }
 }
