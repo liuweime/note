@@ -351,3 +351,26 @@
   - 输出错误并终断程序：使用`os.Exit(1)`或`log.Fatalf()`
 
 - 错误定义：通过`error`包的`New`方法自定义错误
+
+- Go 中的函数可以和变量一样当做参数传递，如下
+
+  ```go
+  func run(a, b int) (m, n int, ok bool) {
+  	m = a + b
+  	n = a - b
+  	ok = true
+  	return 
+  }
+  
+  f := run
+  fmt.Printf("%T\n")   // func(int, int) (int, int, bool)
+  
+  func test(f func(int, int) (int, int, bool)) (m, n int, ok bool) {
+  	return f(10, 3)
+  }
+  
+  x, y, ok := test(run)
+  fmt.Println(x, y, ok)  // 13 7 true
+  ```
+
+  
