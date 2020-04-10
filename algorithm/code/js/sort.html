@@ -138,12 +138,20 @@ function init(data) {
     const oOutput = $('#output');
     const spanWidth = 25;
     const offset = 15;
+    const appWitdh = $('#output').width();
+    const lineWitdh = length * spanWidth + (length-1) * offset;
+    if (lineWitdh + 40 > appWitdh) {
+        alert('随机数太多，超过面板展示数量')
+        return false;
+    }
+    const startOffset = (appWitdh - lineWitdh) / 2
+
     oOutput.html('');
 
     for (let i = 0; i < length; i++) {
         const span = $('<span></span>');
         const height = h * data[i];
-        const left = parseInt($('#output').offset().left)+(spanWidth+offset)*i;
+        const left = startOffset + (spanWidth+offset)*i;
         span.attr('num', data[i]).css({
             'left':left,
             'height':height
