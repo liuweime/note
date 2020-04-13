@@ -1,6 +1,6 @@
 export function exchNode(i, j) {
-    const oINode = $('span').eq(i);
-    const oJNode = $('span').eq(j);
+    const oINode = $('#output span').eq(i);
+    const oJNode = $('#output span').eq(j);
 
     const sTargetColor = '#FBC02D';
     const sNormalColor = '#283593';

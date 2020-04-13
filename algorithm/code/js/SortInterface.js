@@ -3,8 +3,8 @@ export default class SortInterface {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    less(v, w) {
-        return v - w > 0 ? false : true;
+    less(v, w) {        
+        return v - w < 0;
     }
 
     exch(list, i, j) {
