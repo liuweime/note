@@ -41,19 +41,44 @@ column_definition 包括：
   - 字符串：char、varchar、tinytext、mediumtext、text、langtext、set、enum
   - 日期类型：date、time、datetime、timestamp、year
   - 二进制类型：bit、binary、varbinary、tinyblob、blob、mediumblob、langblob
-- 是否允许 NULL：NOT NULL
-- 字段默认值: 字段的默认值除了 datetime 和 timestamp 以外只能是字面量，不能是函数或表达式，datetime 和 timestamp 可以指定 CURRENT_TIMESTAMP 作为默认值，以下是各类型常用的默认值：
-  - 整型：0
-  - 字符串：empty string
-  - 浮点类型：0.0
-  - 定点类型：0.00
-  - 日期类型：
+- 是否允许 NULL：NOT NULL ;text 类型不支持设置 not null
+- 字段默认值: 字段的默认值除了 datetime 和 timestamp 以外只能是字面量，不能是函数或表达式，datetime 和 timestamp 可以指定 CURRENT_TIMESTAMP 作为默认值；如果设置 not null 后，未设置默认值，严格模式下，未指定字段值得 SQL 会报错，非严格模式下，会赋予隐式默认值，以下是各类型的隐式默认值：
+  - 整型：0，如果设置了自增属性，默认值是自增后的值
+  - 字符串：empty string；enum 默认值是第一个枚举值
+  - 浮点类型：0
+  - 定点类型：0
+  - 日期类型：datetime 和 timestamp 使用CURRENT_TIMESTAMP 
+  - 二进制类型：0; BLOB不支持默认值设置
 - 字符集设置
 - 排序规则设置
 - 是否自动递增
-- 
 
 table_options 常见的包括表引擎、字符集设置、排序规则设置、注释。
+
+下面是一个包含了常用类型的数据表 SQL：
+
+```sql
+CREATE TABLE `test` (
+	`id` INT(11) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '主键',
+	`test_float` FLOAT(10, 2) NOT NULL DEFAULT 0.00 COMMENT 'float',
+	`test_double` DOUBLE(10, 2) NOT NULL DEFAULT 0.00 COMMENT 'double',
+	`test_decimal` DECIMAL(10, 2) NOT NULL DEFAULT '0.00' COMMENT 'decimal',
+	`test_char` CHAR(10) NOT NULL DEFAULT '' COMMENT 'char',
+	`test_varchar` VARCHAR(10) NOT NULL DEFAULT '' COMMENT 'varchar',
+	`test_text` TEXT COMMENT 'text',
+	`test_enum` ENUM("one", "two", "three") NOT NULL DEFAULT "one"  COMMENT 'enum',
+	`test_set` SET("one", "two", "three") NOT NULL DEFAULT "one"  COMMENT 'set',
+	`test_date` DATE NOT NULL DEFAULT '2020-04-14' COMMENT 'date',
+	`test_time` TIME NOT NULL DEFAULT '18:20:10' COMMENT 'time',
+	`test_datetime` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'datetime',
+	`test_timestamp` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT 'timestamp',
+	`test_year` YEAR NOT NULL DEFAULT '2020' COMMENT 'year',
+	`test_bit` BIT(8) NOT NULL DEFAULT 0 COMMENT 'bit',
+	PRIMARY KEY (`id`)
+) ENGINE INNODB CHARSET utf8mb4 COLLATE utf8mb4_general_ci COMMENT 'test';
+```
+
+
 
 **索引创建**
 
