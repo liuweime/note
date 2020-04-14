@@ -1,6 +1,6 @@
 ---
 create: 2020-04-13 晚
-update: 2020-04-13 晚
+update: 2020-04-14 晚
 tags: MySQL 复习 笔记
 ---
 
@@ -51,7 +51,7 @@ column_definition 包括：
   - 二进制类型：0; BLOB不支持默认值设置
 - 字符集设置
 - 排序规则设置
-- 是否自动递增
+- 是否自动递增：整型、浮点型可以使用 auto_increment 设置自动递增，注意的是设置了 auto_increment 的字段不能设置默认值
 
 table_options 常见的包括表引擎、字符集设置、排序规则设置、注释。
 
