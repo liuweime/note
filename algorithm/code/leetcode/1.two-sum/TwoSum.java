@@ -1,6 +1,14 @@
+/*
+ * @Author: your name
+ * @Date: 2020-03-25 17:02:30
+ * @LastEditTime: 2020-04-15 18:39:03
+ * @LastEditors: your name
+ * @Description: In User Settings Edit
+ * @FilePath: \goc:\Users\liuw\Documents\note\algorithm\code\leetcode\1.two-sum\TwoSum.java
+ */
 import java.util.HashMap;
 
-public class TwoNum {
+public class TwoSum {
 
     public int[] run(int[] nums, int target) {
         HashMap<Integer, Integer> map = new HashMap<>();
