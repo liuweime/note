@@ -39,7 +39,7 @@ zookeeper.connect 配置的是连接 zookeeper 的地址，同样可以使用`,`
 
 默认值是True，如果在`server.properties`中配置了该参数，且设置为`true`，当生产者向一个未创建的Topic发送消息时，就会自动创建一个`num.partitions=1`的Topic。建议设置为false
 
-### unclean.leader.election.enable | 关闭 unclean leader 选举
+### unclean.leader.election.enable | 是否开启 unclean leader 选举
 
 kafka中分区有多个副本可用，在多个副本中选出一个leader对外提供服务，如果leader挂了，就在其他副本中重新选举；而参与选举的副本必须是保存数据较多的。
 
@@ -60,6 +60,43 @@ kafka中分区有多个副本可用，在多个副本中选出一个leader对外
 ### message.max.bytes | 一条消息的最大数据大小
 
 默认值是1048588，可以调整大一些，对性能没有什么影响。
+
+### enable.auto.comment | 是否启动自动提交位移
+
+> enable.auto.comment=true
+
+配置文件名`producer.properties`
+
+是否启用自动提交(消费)位移，启用后根据`auto.commit.interval.ms`配置的时间间隔定时提交消费者位移。
+
+### auto.commit.interval.ms | 自动提交位移时间间隔
+
+> auto.commit.interval.ms=5000
+
+配置文件名`producer.properties`
+
+启用`enable.auto.comment=true`后，该参数起作用，按照配置的时间间隔提交位移
+
+### acks 
+
+> acks=all
+
+配置文件名`producer.properties`
+
+该参数用于判断消息是否已提交，有三种值可以设置，0、1、all
+
+- 如果设置为`all`，那么必须所有 broker 均确认后，才认为消息已提交
+- 设置为0，不需要任何 Broker 确认，消息一发送就认为提交，不建议使用该参数，无法保证消息真实落地
+- 设置为1，那么仅需要 leader 确认，就认为消息已提交
+
+
+
+
+
+
+
+
+
 
 
 
