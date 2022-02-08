@@ -91,6 +91,16 @@ kafka中分区有多个副本可用，在多个副本中选出一个leader对外
 
 
 
+### enable.idempotence | 是否启用幂等性生产者
+
+> enable.idempotence=true
+
+配置文件名`producer.properties`
+
+该参数用于配置是否启用幂等 Producer，启用后生产者发送的消息具有幂等性，重复发送 Kafka 会自动去重。
+
+这种幂等只针对于单个分区
+
 
 
 
