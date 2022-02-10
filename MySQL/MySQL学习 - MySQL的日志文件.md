@@ -10,7 +10,7 @@
 - **Row**:基于行的复制，检查**RBR**，日志记录的是每一行数据被修改的情况
 - **Mixed**:`Statement`与`Row`模式的混合，检查**MBR**，一般语句使用`statement`模式，当使用一些函数，无法保证主从一致时，使用`row`模式
 
-MySQL5.7之前的版本默认使用**SBR \**模式，8.0之前的版本模式使用\**RBR**，8.0开始已经默认**MBR**模式。
+MySQL5.7之前的版本默认使用**SBR **模式，8.0之前的版本模式使用**RBR**，8.0开始已经默认**MBR**模式。
 
 使用命令`show global variables like '%binlog_format%';`查看当前MySQL使用的binlog模式。
 
