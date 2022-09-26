@@ -31,7 +31,7 @@ func inorderTraversal(root *TreeNode) []int {
   mid(root, &data)
   return data
 }
-
+s
 func mid(root *TreeNode, data *[]int) {
   if root == nil {
     return
